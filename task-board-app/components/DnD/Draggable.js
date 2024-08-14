@@ -6,6 +6,9 @@ export default function Draggable(props) {
 		data: {
 			index: props.taskName,
 		},
+		attributes: {
+			'aria-diabled': props.disabled,
+		},
 	});
 	const style = transform
 		? {

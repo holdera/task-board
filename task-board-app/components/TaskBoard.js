@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import { DndContext } from '@dnd-kit/core';
 
-import Card from './Card';
-import TaskColumn from './TaskColumn';
+import Card from './Tasks/Card';
+import TaskColumn from './Tasks/TaskColumn';
 
 export default function TaskBoard() {
 	const [cardData, setCardData] = useState([
@@ -55,7 +55,6 @@ export default function TaskBoard() {
 
 	function handleDragEnd(event) {
 		if (!event.over) return;
-		console.log(event);
 		const targetId = event.active.id;
 		const currentParentId = event.active.data.current.parent;
 		const destinationId = event.over.id;
@@ -66,7 +65,10 @@ export default function TaskBoard() {
 
 		const updateCardData = cardData.map((card) => {
 			if (card.id === targetId) {
-				return { ...card, parent: destinationId };
+				return {
+					...card,
+					parent: destinationId,
+				};
 			}
 			return card;
 		});
@@ -93,10 +95,7 @@ export default function TaskBoard() {
 
 	return (
 		<>
-			<section
-				id='task-board'
-				className='flex gap-5 justify-between px-10 lg:px-16 xl:px-24'
-			>
+			<section id='task-board' className='flex gap-5 justify-between'>
 				<DndContext onDragEnd={handleDragEnd}>
 					{parent &&
 						parent.map((item, i) => (
@@ -109,6 +108,7 @@ export default function TaskBoard() {
 									item.cards.map((card) => {
 										return (
 											<Card
+												key={card.id}
 												id={card.id}
 												assignee={card.assignee}
 												priorityStatus={

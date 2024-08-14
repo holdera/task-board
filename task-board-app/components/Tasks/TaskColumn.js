@@ -8,7 +8,9 @@ export default function TaskColumn({ id, children, title }) {
 	return (
 		<div
 			ref={setNodeRef}
-			className={`w-1/4 ${isOver ? 'bg-transparent' : 'bg-gray-300'}`}
+			className={`w-1/4 rounded-xl p-1.5 ${
+				isOver ? 'bg-gray-300 ' : 'bg-transparent'
+			}`}
 		>
 			<CardHeaders progressTitle={title} />
 			{children}
