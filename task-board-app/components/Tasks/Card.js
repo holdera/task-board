@@ -11,7 +11,7 @@ export default function Card({
 }) {
 	return (
 		<Draggable id={id}>
-			<div className='bg-white p-4 relative rounded-xl shadow-lg'>
+			<div className='bg-white p-4 relative rounded-xl shadow-lg text-left'>
 				<PriorityLabel label={priorityStatus} />
 				<div className='py-4'>
 					<h3 className='font-semibold pb-1.5'>{taskName}</h3>

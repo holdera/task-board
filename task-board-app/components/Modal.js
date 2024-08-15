@@ -1,3 +1,6 @@
+import Image from 'next/image';
+import CloseImg from '../assets/close.svg';
+
 export default function Modal({ children, onClose }) {
 	return (
 		<>
@@ -7,14 +10,10 @@ export default function Modal({ children, onClose }) {
 			></div>
 			<dialog
 				open
-				className='bg-white max-w-[90%] py-3 px-4 rounded-2xl top-[30%] w-[30rem] z-10'
+				className='bg-white max-w-[90%] py-3 px-4 rounded-2xl top-[25%] w-[30rem] z-10'
 			>
-				<button
-					className='absolute right-5'
-					onClick={onClose}
-					aria-label='close'
-				>
-					X
+				<button className='absolute right-5' onClick={onClose}>
+					<Image src={CloseImg} alt='close' />
 				</button>
 				{children}
 			</dialog>

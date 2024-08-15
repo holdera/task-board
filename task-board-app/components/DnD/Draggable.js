@@ -4,10 +4,7 @@ export default function Draggable(props) {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({
 		id: props.id,
 		data: {
-			index: props.taskName,
-		},
-		attributes: {
-			'aria-diabled': props.disabled,
+			index: props.id,
 		},
 	});
 	const style = transform
@@ -17,7 +14,13 @@ export default function Draggable(props) {
 		: undefined;
 
 	return (
-		<button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+		<button
+			className='draggable-buttons w-full mb-5'
+			ref={setNodeRef}
+			style={style}
+			{...listeners}
+			{...attributes}
+		>
 			{props.children}
 		</button>
 	);
