@@ -22,7 +22,7 @@ const TaskSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	task_parent: {
+	task_status: {
 		type: String,
 		required: true,
 	},

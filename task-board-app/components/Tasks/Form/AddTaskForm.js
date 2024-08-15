@@ -2,7 +2,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { createNewTask, queryClient } from '@/utils/http';
 import Input from './Input';
-import Modal from '@/components/Modal';
+import Modal from '@/components/UI/Modal';
 import Select from './Select';
 
 export default function AddTaskForm({ onClose }) {
@@ -62,8 +62,8 @@ export default function AddTaskForm({ onClose }) {
 				<Input
 					type='hidden'
 					value='todo'
-					id='task_parent'
-					name='task_parent'
+					id='task_status'
+					name='task_status'
 				/>
 
 				<button className='bg-main mt-3 py-1.5 px-3 rounded-lg text-white'>

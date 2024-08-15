@@ -1,10 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { fetchTasks, queryClient, updateTask } from '../utils/http';
+import { fetchTasks, queryClient, updateTask } from '../../../utils/http';
 import { DndContext } from '@dnd-kit/core';
-import Card from './Tasks/Card';
-import TaskColumn from './Tasks/TaskColumn';
+import Card from '../TaskCard/Card';
+import TaskColumn from './TaskColumn';
+import ErrorMsg from '@/components/UI/ErrorMsg';
+import { useTaskStore } from '@/store/useTaskStore';
 
 export default function TaskBoard() {
 	const { data, isLoading, isError } = useQuery({
@@ -40,7 +42,7 @@ export default function TaskBoard() {
 		queryKey: ['tasks'],
 		mutationFn: updateTask,
 		onMutate: async (data) => {
-			const { id, task_parent } = data;
+			const { id, task_status } = data;
 
 			await queryClient.cancelQueries({
 				queryKey: ['tasks', id],
@@ -50,7 +52,7 @@ export default function TaskBoard() {
 
 			queryClient.setQueryData(['tasks', id], (oldData) => ({
 				...oldData,
-				task_parent,
+				task_status,
 			}));
 
 			return { prevTask };
@@ -72,10 +74,9 @@ export default function TaskBoard() {
 			setCardData(data);
 		}
 		if (cardData) {
-			console.log(cardData);
 			const updatedParents = parent.map((item) => {
 				const cardsInThisColumn = cardData.filter(
-					(card) => card.task_parent === item.id
+					(card) => card.task_status === item.id
 				);
 				return {
 					...item,
@@ -93,7 +94,9 @@ export default function TaskBoard() {
 	}
 
 	if (isError) {
-		content = <p>Error fetching tasks.</p>;
+		content = (
+			<ErrorMsg message='Error fetching tasks. Please try again later.' />
+		);
 	}
 
 	if (data && cardData) {
@@ -129,15 +132,15 @@ export default function TaskBoard() {
 		if (!event.over) return;
 		const targetId = event.active.id;
 		const destinationParent = event.over.id;
-		const currentParentId = event.active.data.current.task_parent;
+		const currentParentId = event.active.data.current.task_status;
 
 		const draggedCard = cardData.find((card) => card._id === targetId);
-		const currentParent = cardData.map((card) => card.task_parent)[0];
+		const currentParent = cardData.map((card) => card.task_status)[0];
 		console.log(currentParent);
 
 		const updatedCardData = cardData.map((card) =>
 			card._id === targetId
-				? { ...card, task_parent: destinationParent }
+				? { ...card, task_status: destinationParent }
 				: card
 		);
 

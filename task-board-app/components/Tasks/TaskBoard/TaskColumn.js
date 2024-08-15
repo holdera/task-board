@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core';
-import CardHeaders from './CardHeaders';
+import CardHeaders from '../TaskCard/CardHeaders';
 
 export default function TaskColumn({ id, children, title }) {
 	const { isOver, setNodeRef } = useDroppable({

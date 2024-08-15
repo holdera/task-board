@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import CloseImg from '../assets/close.svg';
+import CloseImg from '../../assets/close.svg';
 
 export default function Modal({ children, onClose }) {
 	return (

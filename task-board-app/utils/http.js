@@ -41,7 +41,7 @@ export async function fetchTasks() {
 export async function updateTask({ id, task }) {
 	const response = await fetch(url + `/${id}`, {
 		method: 'PUT',
-		body: JSON.stringify({ task_parent: task }),
+		body: JSON.stringify({ task_status: task }),
 		headers: {
 			'Content-Type': 'application/json',
 		},

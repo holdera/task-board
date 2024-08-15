@@ -1,4 +1,4 @@
-import Draggable from '../DnD/Draggable';
+import Draggable from '../../DnD/Draggable';
 import PriorityLabel from './PriorityLabel';
 import TaskAssignee from './TaskAssignee';
 

@@ -1,18 +1,32 @@
 import { create } from 'zustand';
-import { useQuery } from '@tanstack/react-query';
-import { fetchEvent } from '../utils/http';
+import { createNewTask, fetchTasks } from '@/utils/http';
 
-//queries
-// const query = useQuery({
-// 	queryKey: ['tasks'],
-// 	queryFn: ({ signal }) => fetchEvent({ signal }),
-// });
-
-const useTaskStore = create((set) => ({
+export const useTaskStore = create((set, get) => ({
 	tasks: [],
-	setTasks: (tasks) => set(() => ({ tasks })),
-	//addTasks: () => set((state) => console.log(state)),
+	isLoading: false,
+	isError: false,
+	getTasks: async () => {
+		try {
+			set({ isLoading: true });
+			const data = await fetchTasks();
+			set({ isLoading: false, tasks: data });
+		} catch (err) {
+			set({ isError: true, isLoading: false });
+		}
+	},
+	createTasks: async (formData) => {
+		try {
+			set({ isLoading: true });
+			const newTasks = await createNewTask(formData);
+			const updatedTasks = [...get().tasks, newTasks];
+			set({ isLoading: false, tasks: updatedTasks });
+			// set((state) => ({
+			// 	isLoading: false,
+			// 	tasks: [...state.data, newTasks],
+			// }));
+		} catch (err) {
+			set({ isError: true, isLoading: false });
+		}
+	},
 	clearTasks: () => set({ tasks: [] }),
 }));
-
-export default useTaskStore;

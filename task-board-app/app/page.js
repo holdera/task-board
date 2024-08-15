@@ -3,7 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/utils/http';
 import { useState } from 'react';
 import AddTaskForm from '@/components/Tasks/Form/AddTaskForm';
-import TaskBoard from '@/components/TaskBoard';
+import TaskBoard from '@/components/Tasks/TaskBoard/TaskBoard';
 import Sidebar from '@/components/Sidebar/Sidebar';
 
 export default function Home() {
