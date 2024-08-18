@@ -69,6 +69,14 @@ export default function TaskBoard() {
 		},
 	});
 
+	function handleDelete(e) {
+		console.log('delete');
+	}
+
+	function handleEdit(e) {
+		console.log('edit');
+	}
+
 	useEffect(() => {
 		if (data && !cardData) {
 			setCardData(data);
@@ -119,6 +127,8 @@ export default function TaskBoard() {
 											priorityStatus={card.task_priority}
 											taskName={card.task_name}
 											taskDesc={card.task_description}
+											deleteTask={handleDelete}
+											editTask={handleEdit}
 										/>
 									);
 								})}

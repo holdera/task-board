@@ -20,6 +20,7 @@ export default function Draggable(props) {
 			style={style}
 			{...listeners}
 			{...attributes}
+			tabIndex={0}
 		>
 			{props.children}
 		</button>

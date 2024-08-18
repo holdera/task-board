@@ -19,15 +19,6 @@ const port = 8000;
 
 app.get('/', (req, res) => {
 	res.send('Hello');
-	// res.setHeader('Access-Control-Allow-Origin', '*');
-	// res.setHeader(
-	// 	'Access-Control-Allow-Methods',
-	// 	'GET, POST, PUT, DELETE, OPTIONS'
-	// );
-	// res.setHeader(
-	// 	'Access-Control-Allow-Headers',
-	// 	'X-Requested-With,content-type'
-	// );
 });
 
 app.listen(port, () => {
