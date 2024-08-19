@@ -35,7 +35,7 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-	Task.findByIdAndUpdate(req.params.id)
+	Task.findByIdAndDelete(req.params.id)
 		.then((task) => res.json({ message: 'Deleted Task' }))
 		.catch((err) => res.status(404).json({ error: 'Cannot find task.' }));
 });

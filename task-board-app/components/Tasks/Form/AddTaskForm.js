@@ -1,17 +1,21 @@
 'use client';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useModalStore } from '@/store/useModalStore';
 import { createNewTask, queryClient } from '@/utils/http';
+import Button from '@/components/UI/Button';
 import Input from './Input';
 import Modal from '@/components/UI/Modal';
 import Select from './Select';
 
-export default function AddTaskForm({ onClose }) {
-	const mutation = useMutation({
+export default function AddTaskForm() {
+	const closeModal = useModalStore((state) => state.closeModal);
+
+	const addNewTask = useMutation({
 		mutationFn: createNewTask,
 		onSuccess: () => {
 			console.log('success');
 			queryClient.invalidateQueries({ queryKey: ['tasks'] });
-			onClose();
+			closeModal();
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ['tasks'] });
@@ -22,11 +26,11 @@ export default function AddTaskForm({ onClose }) {
 		e.preventDefault();
 		const form_data = new FormData(e.target);
 		const data_form = Object.fromEntries(form_data);
-		mutation.mutate(data_form);
+		addNewTask.mutate(data_form);
 	}
 
 	return (
-		<Modal onClose={onClose}>
+		<Modal>
 			<form id='task-form' onSubmit={handleAddTask}>
 				<Input
 					type='text'
@@ -66,9 +70,13 @@ export default function AddTaskForm({ onClose }) {
 					name='task_status'
 				/>
 
-				<button className='bg-main mt-3 py-1.5 px-3 rounded-lg text-white'>
-					Add New Task
-				</button>
+				<div className='flex flex-col md:flex-row gap-3 justify-end'>
+					<Button type='button' onClick={closeModal}>
+						Cancel
+					</Button>
+
+					<Button submitBtn>Add New Task</Button>
+				</div>
 			</form>
 		</Modal>
 	);

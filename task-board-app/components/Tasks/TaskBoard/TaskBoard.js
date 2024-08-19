@@ -1,20 +1,36 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { fetchTasks, queryClient, updateTask } from '../../../utils/http';
+import {
+	fetchTasks,
+	queryClient,
+	updateTask,
+	deleteTask,
+} from '../../../utils/http';
 import { DndContext } from '@dnd-kit/core';
 import Card from '../TaskCard/Card';
 import TaskColumn from './TaskColumn';
 import ErrorMsg from '@/components/UI/ErrorMsg';
+import DeleteModal from '@/components/UI/DeleteModal';
+import { useModalStore } from '@/store/useModalStore';
 import { useTaskStore } from '@/store/useTaskStore';
 
 export default function TaskBoard() {
+	const deleteModal = useModalStore((state) => state.deleteTaskModal);
+	const taskId = useModalStore((state) => state.taskId);
+	const openDeleteTaskModal = useModalStore(
+		(state) => state.openDeleteTaskModal
+	);
+	const closeModal = useModalStore((state) => state.closeModal);
+
+	const tasks = useTaskStore((state) => state.tasks);
+	const setTasks = useTaskStore((state) => state.setTasks);
+
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['tasks'],
 		queryFn: ({ signal }) => fetchTasks({ signal }),
 	});
 
-	const [cardData, setCardData] = useState(null);
 	const [parent, setParent] = useState([
 		{
 			id: 'todo',
@@ -38,7 +54,7 @@ export default function TaskBoard() {
 		},
 	]);
 
-	const { mutate } = useMutation({
+	const updateCardTask = useMutation({
 		queryKey: ['tasks'],
 		mutationFn: updateTask,
 		onMutate: async (data) => {
@@ -69,8 +85,31 @@ export default function TaskBoard() {
 		},
 	});
 
-	function handleDelete(e) {
-		console.log('delete');
+	const mutateTask = useMutation({
+		queryKey: ['tasks'],
+		mutationFn: deleteTask,
+		onMutate: async (data) => {
+			queryClient.invalidateQueries({ queryKey: ['tasks'] });
+		},
+		onError: (error, newData, context) => {
+			console.log(error, newData, context);
+		},
+		onSuccess: () => {
+			closeModal();
+			queryClient.invalidateQueries({ queryKey: ['tasks'] });
+		},
+		onSettled: () => {
+			const newData = queryClient.invalidateQueries(['tasks']);
+			console.log(newData);
+			return newData;
+		},
+	});
+
+	function handleDelete() {
+		if (taskId !== '') {
+			console.log(`delete task with ${taskId}`);
+			mutateTask.mutate({ id: taskId });
+		}
 	}
 
 	function handleEdit(e) {
@@ -78,12 +117,11 @@ export default function TaskBoard() {
 	}
 
 	useEffect(() => {
-		if (data && !cardData) {
-			setCardData(data);
-		}
-		if (cardData) {
+		setTasks(data);
+
+		if (tasks) {
 			const updatedParents = parent.map((item) => {
-				const cardsInThisColumn = cardData.filter(
+				const cardsInThisColumn = tasks.filter(
 					(card) => card.task_status === item.id
 				);
 				return {
@@ -93,7 +131,7 @@ export default function TaskBoard() {
 			});
 			setParent(updatedParents);
 		}
-	}, [data, cardData]);
+	}, [data, tasks]);
 
 	let content;
 
@@ -107,7 +145,7 @@ export default function TaskBoard() {
 		);
 	}
 
-	if (data && cardData) {
+	if (data && tasks) {
 		content = (
 			<>
 				{parent &&
@@ -127,7 +165,9 @@ export default function TaskBoard() {
 											priorityStatus={card.task_priority}
 											taskName={card.task_name}
 											taskDesc={card.task_description}
-											deleteTask={handleDelete}
+											openEditModal={() =>
+												openDeleteTaskModal(card._id)
+											}
 											editTask={handleEdit}
 										/>
 									);
@@ -142,13 +182,12 @@ export default function TaskBoard() {
 		if (!event.over) return;
 		const targetId = event.active.id;
 		const destinationParent = event.over.id;
-		const currentParentId = event.active.data.current.task_status;
 
-		const draggedCard = cardData.find((card) => card._id === targetId);
-		const currentParent = cardData.map((card) => card.task_status)[0];
+		const draggedCard = tasks.find((card) => card._id === targetId);
+		const currentParent = tasks.map((card) => card.task_status)[0];
 		console.log(currentParent);
 
-		const updatedCardData = cardData.map((card) =>
+		const updatedCardData = tasks.map((card) =>
 			card._id === targetId
 				? { ...card, task_status: destinationParent }
 				: card
@@ -166,10 +205,10 @@ export default function TaskBoard() {
 		});
 
 		if (currentParent !== destinationParent) {
-			setCardData(updatedCardData);
+			setTasks(updatedCardData);
 			setParent(updateParent);
 
-			mutate({ id: targetId, task: destinationParent });
+			updateCardTask.mutate({ id: targetId, task: destinationParent });
 		}
 	}
 
@@ -178,6 +217,7 @@ export default function TaskBoard() {
 			<section id='task-board' className='flex gap-5 justify-between'>
 				<DndContext onDragEnd={handleDragEnd}>{content}</DndContext>
 			</section>
+			{deleteModal && <DeleteModal deleteTaskHandler={handleDelete} />}
 		</>
 	);
 }

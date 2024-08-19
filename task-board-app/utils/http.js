@@ -48,11 +48,31 @@ export async function updateTask({ id, task }) {
 	});
 
 	if (!response.ok) {
-		const error = new Error('An error occurred while updating the event');
+		const error = new Error('An error occurred while updating the task');
 		error.code = response.status;
 		error.info = await response.json();
 		throw error;
 	}
 
 	return await response.json();
+}
+
+export async function deleteTask({ id }) {
+	const fullURL = `${url}/${id}`;
+
+	const response = await fetch(fullURL, {
+		method: 'DELETE',
+	});
+	if (!response.ok) {
+		const error = new Error(
+			'An error occurred when attempting to delete the task.'
+		);
+		error.code = response.status;
+		error.info = await response.json();
+		throw error;
+	}
+
+	const data = await response.json();
+
+	return data;
 }

@@ -14,7 +14,7 @@ export default function Draggable(props) {
 		: undefined;
 
 	return (
-		<button
+		<div
 			className='draggable-buttons w-full mb-5'
 			ref={setNodeRef}
 			style={style}
@@ -23,6 +23,6 @@ export default function Draggable(props) {
 			tabIndex={0}
 		>
 			{props.children}
-		</button>
+		</div>
 	);
 }

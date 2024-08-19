@@ -1,31 +1,30 @@
 import { create } from 'zustand';
-import { createNewTask, fetchTasks } from '@/utils/http';
+import { createNewTask } from '@/utils/http';
 
 export const useTaskStore = create((set, get) => ({
 	tasks: [],
-	isLoading: false,
-	isError: false,
-	getTasks: async () => {
-		try {
-			set({ isLoading: true });
-			const data = await fetchTasks();
-			set({ isLoading: false, tasks: data });
-		} catch (err) {
-			set({ isError: true, isLoading: false });
-		}
+	loading: false,
+	error: false,
+	setTasks: async (data) => {
+		set({ tasks: data });
 	},
+	// getTasks: async () => {
+	// 	try {
+	// 		set({ loading: true });
+	// 		const data = await fetchTasks();
+	// 		set({ loading: false, tasks: data });
+	// 	} catch (err) {
+	// 		set({ error: true, loading: false });
+	// 	}
+	// },
 	createTasks: async (formData) => {
 		try {
-			set({ isLoading: true });
+			set({ loading: true });
 			const newTasks = await createNewTask(formData);
 			const updatedTasks = [...get().tasks, newTasks];
-			set({ isLoading: false, tasks: updatedTasks });
-			// set((state) => ({
-			// 	isLoading: false,
-			// 	tasks: [...state.data, newTasks],
-			// }));
+			set({ loading: false, tasks: updatedTasks });
 		} catch (err) {
-			set({ isError: true, isLoading: false });
+			set({ error: true, loading: false });
 		}
 	},
 	clearTasks: () => set({ tasks: [] }),
