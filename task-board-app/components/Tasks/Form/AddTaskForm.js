@@ -4,8 +4,9 @@ import { useModalStore } from '@/store/useModalStore';
 import { createNewTask, queryClient } from '@/utils/http';
 import Button from '@/components/UI/Button';
 import Modal from '@/components/UI/Modal';
-
 import TaskForm from './TaskForm';
+
+import { h2Styles } from '../../../styles/styles';
 
 export default function AddTaskForm() {
 	const closeModal = useModalStore((state) => state.closeModal);
@@ -23,15 +24,13 @@ export default function AddTaskForm() {
 		},
 	});
 
-	function handleAddTask(e) {
-		e.preventDefault();
-		const form_data = new FormData(e.target);
-		const data_form = Object.fromEntries(form_data);
-		addNewTask.mutate(data_form);
+	function handleAddTask(formData) {
+		addNewTask.mutate(formData);
 	}
 
 	return (
 		<Modal>
+			<h2 className={h2Styles}>Add New Task</h2>
 			<TaskForm onSubmit={handleAddTask}>
 				<Button type='button' onClick={closeModal}>
 					Cancel

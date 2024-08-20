@@ -19,7 +19,6 @@ import DeleteModal from '@/components/UI/DeleteModal';
 export default function TaskBoard() {
 	const deleteModal = useModalStore((state) => state.deleteTaskModal);
 	const editModal = useModalStore((state) => state.editTaskModal);
-	console.log(editModal);
 	const taskId = useModalStore((state) => state.taskId);
 	const openDeleteTaskModal = useModalStore(
 		(state) => state.openDeleteTaskModal
@@ -78,7 +77,6 @@ export default function TaskBoard() {
 			return { prevTask };
 		},
 		onError: (error, newData, context) => {
-			console.log(error);
 			queryClient.setQueryData(['tasks', newData.id], context.prevTask);
 		},
 		onSuccess: (newData) => {
@@ -114,7 +112,6 @@ export default function TaskBoard() {
 
 	function handleDelete() {
 		if (taskId !== '') {
-			console.log(`delete task with ${taskId}`);
 			mutateTask.mutate({ id: taskId });
 		}
 	}
@@ -194,7 +191,6 @@ export default function TaskBoard() {
 
 		const draggedCard = tasks.find((card) => card._id === targetId);
 		const currentParent = tasks.map((card) => card.task_status)[0];
-		console.log(currentParent);
 
 		const updatedCardData = tasks.map((card) =>
 			card._id === targetId
@@ -227,7 +223,7 @@ export default function TaskBoard() {
 				<DndContext onDragEnd={handleDragEnd}>{content}</DndContext>
 			</section>
 			{deleteModal && <DeleteModal deleteTaskHandler={handleDelete} />}
-			{editModal && <EditTaskForm handleEditTask={handleEdit} />}
+			{editModal && <EditTaskForm id={taskId} />}
 		</>
 	);
 }

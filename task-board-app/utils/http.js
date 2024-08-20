@@ -38,6 +38,20 @@ export async function fetchTasks() {
 	return tasks;
 }
 
+export async function fetchSingleTask({ id, signal }) {
+	const response = await fetch(`${url}/${id}`, { signal });
+
+	if (!response.ok) {
+		const error = new Error('Error occurred while fetching this task');
+		error.code = response.status;
+		error.info = await response.json();
+		throw error;
+	}
+
+	const task = await response.json();
+	return task;
+}
+
 export async function updateTask({ id, task }) {
 	const response = await fetch(url + `/${id}`, {
 		method: 'PUT',

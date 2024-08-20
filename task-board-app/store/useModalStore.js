@@ -21,9 +21,10 @@ export const useModalStore = create((set) => ({
 			taskId: id,
 		});
 	},
-	openEditTaskModal: () => {
+	openEditTaskModal: (id) => {
 		set({
 			editTaskModal: true,
+			taskId: id,
 		});
 	},
 
