@@ -8,13 +8,17 @@ router.get('/test', (req, res) => res.send('route testing'));
 router.get('/', (req, res) => {
 	Task.find()
 		.then((tasks) => res.json(tasks))
-		.catch((err) => res.status(404).json({ notasksfound: 'No tasks' }));
+		.catch((err) =>
+			res.status(404).json({ notasksfound: 'No tasks found!' })
+		);
 });
 
 router.get('/:id', (req, res) => {
 	Task.findById(req.params.id)
 		.then((tasks) => res.json(tasks))
-		.catch((err) => res.status(404).json({ notasksfound: 'No tasks' }));
+		.catch((err) =>
+			res.status(404).json({ notasksfound: 'No task with that id found' })
+		);
 });
 
 router.post('/', (req, res) => {

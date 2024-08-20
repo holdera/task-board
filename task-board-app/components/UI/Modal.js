@@ -13,10 +13,13 @@ export default function Modal({ children }) {
 			></div>
 			<dialog
 				open
-				className='bg-white max-w-[90%] py-3 px-4 rounded-2xl top-[25%] w-[30rem] z-10'
+				className='bg-white max-w-[90%] p-6 rounded-2xl translate-y-1/2 w-[30rem] z-20'
 			>
-				<button className='absolute right-5' onClick={closeModal}>
-					<Image src={CloseImg} alt='close' />
+				<button
+					className='absolute right-3.5 top-3.5'
+					onClick={closeModal}
+				>
+					<Image src={CloseImg} width={20} alt='close' />
 				</button>
 				{children}
 			</dialog>

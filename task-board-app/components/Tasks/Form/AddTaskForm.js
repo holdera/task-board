@@ -12,9 +12,10 @@ export default function AddTaskForm() {
 
 	const addNewTask = useMutation({
 		mutationFn: createNewTask,
+		onMutate: (newData) => {
+			queryClient.setQueryData(['tasks'], (old) => [...old, newData]);
+		},
 		onSuccess: () => {
-			console.log('success');
-			queryClient.invalidateQueries({ queryKey: ['tasks'] });
 			closeModal();
 		},
 		onSettled: () => {

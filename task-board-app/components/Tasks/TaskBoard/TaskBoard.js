@@ -88,19 +88,22 @@ export default function TaskBoard() {
 	const mutateTask = useMutation({
 		queryKey: ['tasks'],
 		mutationFn: deleteTask,
-		onMutate: async (data) => {
+		onMutate: async (newData) => {
 			queryClient.invalidateQueries({ queryKey: ['tasks'] });
+
+			queryClient.setQueryData(['tasks'], (oldData) => [
+				...oldData,
+				newData,
+			]);
 		},
 		onError: (error, newData, context) => {
 			console.log(error, newData, context);
 		},
 		onSuccess: () => {
 			closeModal();
-			queryClient.invalidateQueries({ queryKey: ['tasks'] });
 		},
 		onSettled: () => {
 			const newData = queryClient.invalidateQueries(['tasks']);
-			console.log(newData);
 			return newData;
 		},
 	});

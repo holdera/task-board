@@ -15,7 +15,7 @@ export default function Draggable(props) {
 
 	return (
 		<div
-			className='draggable-buttons w-full mb-5'
+			className='draggable-buttons w-full'
 			ref={setNodeRef}
 			style={style}
 			{...listeners}

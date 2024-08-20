@@ -13,7 +13,7 @@ export default function Card({
 	taskDesc,
 }) {
 	return (
-		<div className='bg-white p-4 relative rounded-xl shadow-lg text-left'>
+		<div className='bg-white p-4 relative rounded-xl shadow-lg text-left mb-2'>
 			<div className='flex justify-between'>
 				<PriorityLabel label={priorityStatus} />
 				<CardEditItems
