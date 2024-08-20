@@ -6,8 +6,8 @@ import TaskAssignee from './TaskAssignee';
 export default function Card({
 	id,
 	assignee,
+	openDeleteModal,
 	openEditModal,
-	editTask,
 	priorityStatus,
 	taskName,
 	taskDesc,
@@ -18,7 +18,7 @@ export default function Card({
 				<PriorityLabel label={priorityStatus} />
 				<CardEditItems
 					openEditModal={openEditModal}
-					editTask={editTask}
+					openDeleteModal={openDeleteModal}
 				/>
 			</div>
 			<Draggable id={id}>

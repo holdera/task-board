@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useModalStore } from '@/store/useModalStore';
+import { useTaskStore } from '@/store/useTaskStore';
 import {
 	fetchTasks,
 	queryClient,
@@ -11,16 +13,18 @@ import { DndContext } from '@dnd-kit/core';
 import Card from '../TaskCard/Card';
 import TaskColumn from './TaskColumn';
 import ErrorMsg from '@/components/UI/ErrorMsg';
+import EditTaskForm from '../Form/EditTaskForm';
 import DeleteModal from '@/components/UI/DeleteModal';
-import { useModalStore } from '@/store/useModalStore';
-import { useTaskStore } from '@/store/useTaskStore';
 
 export default function TaskBoard() {
 	const deleteModal = useModalStore((state) => state.deleteTaskModal);
+	const editModal = useModalStore((state) => state.editTaskModal);
+	console.log(editModal);
 	const taskId = useModalStore((state) => state.taskId);
 	const openDeleteTaskModal = useModalStore(
 		(state) => state.openDeleteTaskModal
 	);
+	const openEditTaskModal = useModalStore((state) => state.openEditTaskModal);
 	const closeModal = useModalStore((state) => state.closeModal);
 
 	const tasks = useTaskStore((state) => state.tasks);
@@ -169,9 +173,11 @@ export default function TaskBoard() {
 											taskName={card.task_name}
 											taskDesc={card.task_description}
 											openEditModal={() =>
+												openEditTaskModal(card._id)
+											}
+											openDeleteModal={() =>
 												openDeleteTaskModal(card._id)
 											}
-											editTask={handleEdit}
 										/>
 									);
 								})}
@@ -221,6 +227,7 @@ export default function TaskBoard() {
 				<DndContext onDragEnd={handleDragEnd}>{content}</DndContext>
 			</section>
 			{deleteModal && <DeleteModal deleteTaskHandler={handleDelete} />}
+			{editModal && <EditTaskForm handleEditTask={handleEdit} />}
 		</>
 	);
 }
