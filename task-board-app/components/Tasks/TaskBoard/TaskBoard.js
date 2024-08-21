@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useModalStore } from '@/store/useModalStore';
 import { useTaskStore } from '@/store/useTaskStore';
@@ -9,7 +9,12 @@ import {
 	updateTaskParent,
 	deleteTask,
 } from '../../../utils/http';
-import { DndContext } from '@dnd-kit/core';
+import {
+	DndContext,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from '@dnd-kit/core';
 import Card from '../TaskCard/Card';
 import TaskColumn from './TaskColumn';
 import ErrorMsg from '@/components/UI/ErrorMsg';
@@ -29,33 +34,22 @@ export default function TaskBoard() {
 	const tasks = useTaskStore((state) => state.tasks);
 	const setTasks = useTaskStore((state) => state.setTasks);
 
+	const parent = useTaskStore((state) => state.parent);
+	const setParent = useTaskStore((state) => state.setParent);
+
+	const pointer = useSensors(
+		useSensor(PointerSensor, {
+			activationConstraint: {
+				delay: 200,
+				tolerance: 900,
+			},
+		})
+	);
+
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['tasks'],
 		queryFn: ({ signal }) => fetchTasks({ signal }),
 	});
-
-	const [parent, setParent] = useState([
-		{
-			id: 'todo',
-			title: 'To do',
-			cards: [],
-		},
-		{
-			id: 'inProgress',
-			title: 'In Progress',
-			cards: [],
-		},
-		{
-			id: 'qa',
-			title: 'In QA',
-			cards: [],
-		},
-		{
-			id: 'completed',
-			title: 'Completed',
-			cards: [],
-		},
-	]);
 
 	const updateCardTask = useMutation({
 		queryKey: ['tasks'],
@@ -87,12 +81,10 @@ export default function TaskBoard() {
 		},
 	});
 
-	const mutateTask = useMutation({
+	const removeTask = useMutation({
 		queryKey: ['tasks'],
 		mutationFn: deleteTask,
 		onMutate: async (newData) => {
-			queryClient.invalidateQueries({ queryKey: ['tasks'] });
-
 			queryClient.setQueryData(['tasks'], (oldData) => [
 				...oldData,
 				newData,
@@ -105,15 +97,12 @@ export default function TaskBoard() {
 			closeModal();
 		},
 		onSettled: () => {
-			const newData = queryClient.invalidateQueries(['tasks']);
-			return newData;
+			queryClient.invalidateQueries(['tasks']);
 		},
 	});
 
 	function handleDelete() {
-		if (taskId !== '') {
-			mutateTask.mutate({ id: taskId });
-		}
+		taskId !== '' && removeTask.mutate({ id: taskId });
 	}
 
 	useEffect(() => {
@@ -133,60 +122,13 @@ export default function TaskBoard() {
 		}
 	}, [data, tasks]);
 
-	let content;
-
-	if (isLoading) {
-		content = <p>Is loading...</p>;
-	}
-
-	if (isError) {
-		content = (
-			<ErrorMsg message='Error fetching tasks. Please try again later.' />
-		);
-	}
-
-	if (data && tasks) {
-		content = (
-			<>
-				{parent &&
-					parent.map((item, i) => (
-						<TaskColumn
-							key={item.id}
-							id={item.id}
-							title={item.title}
-						>
-							{item.cards &&
-								item.cards.map((card, i) => {
-									return (
-										<Card
-											key={card._id}
-											id={card._id}
-											assignee={card.task_assignee}
-											priorityStatus={card.task_priority}
-											taskName={card.task_name}
-											taskDesc={card.task_description}
-											openEditModal={() =>
-												openEditTaskModal(card._id)
-											}
-											openDeleteModal={() =>
-												openDeleteTaskModal(card._id)
-											}
-										/>
-									);
-								})}
-						</TaskColumn>
-					))}
-			</>
-		);
-	}
-
 	function handleDragEnd(event) {
 		if (!event.over) return;
 		const targetId = event.active.id;
 		const destinationParent = event.over.id;
 
 		const draggedCard = tasks.find((card) => card._id === targetId);
-		const currentParent = tasks.map((card) => card.task_status)[0];
+		const currentParent = tasks.map((card) => card.task_status); //[0]
 
 		const updatedCardData = tasks.map((card) =>
 			card._id === targetId
@@ -216,7 +158,56 @@ export default function TaskBoard() {
 	return (
 		<>
 			<section id='task-board' className='flex gap-5 justify-between'>
-				<DndContext onDragEnd={handleDragEnd}>{content}</DndContext>
+				<DndContext sensors={pointer} onDragEnd={handleDragEnd}>
+					{isLoading && <p>Is loading...</p>}
+					{isError && (
+						<ErrorMsg message='Error fetching tasks. Please try again later.' />
+					)}
+					{data && tasks && (
+						<>
+							{parent &&
+								parent.map((item, i) => (
+									<TaskColumn
+										key={item.id}
+										id={item.id}
+										title={item.title}
+									>
+										{item.cards &&
+											item.cards.map((card, i) => {
+												return (
+													<Card
+														key={card._id}
+														id={card._id}
+														assignee={
+															card.task_assignee
+														}
+														priorityStatus={
+															card.task_priority
+														}
+														taskName={
+															card.task_name
+														}
+														taskDesc={
+															card.task_description
+														}
+														openEditModal={() =>
+															openEditTaskModal(
+																card._id
+															)
+														}
+														openDeleteModal={() =>
+															openDeleteTaskModal(
+																card._id
+															)
+														}
+													/>
+												);
+											})}
+									</TaskColumn>
+								))}
+						</>
+					)}
+				</DndContext>
 			</section>
 			{deleteModal && <DeleteModal deleteTaskHandler={handleDelete} />}
 			{editModal && <EditTaskForm id={taskId} />}

@@ -13,15 +13,16 @@ export default function Card({
 	taskDesc,
 }) {
 	return (
-		<div className='bg-white p-4 relative rounded-xl shadow-lg text-left mb-2'>
-			<div className='flex justify-between'>
-				<PriorityLabel label={priorityStatus} />
-				<CardEditItems
-					openEditModal={openEditModal}
-					openDeleteModal={openDeleteModal}
-				/>
-			</div>
-			<Draggable id={id}>
+		<Draggable id={id}>
+			<div className='bg-white p-4 relative rounded-xl shadow-lg text-left mb-2'>
+				<div className='flex justify-between'>
+					<PriorityLabel label={priorityStatus} />
+					<CardEditItems
+						openEditModal={openEditModal}
+						openDeleteModal={openDeleteModal}
+					/>
+				</div>
+
 				<div>
 					<div className='content-card py-4'>
 						<h3 className='font-semibold pb-1.5'>{taskName}</h3>
@@ -30,7 +31,7 @@ export default function Card({
 					</div>
 					<TaskAssignee assignee={assignee} />
 				</div>
-			</Draggable>
-		</div>
+			</div>
+		</Draggable>
 	);
 }

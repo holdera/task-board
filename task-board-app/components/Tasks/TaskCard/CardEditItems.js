@@ -5,7 +5,7 @@ import Pencil from '../../../assets/pencil.svg';
 export default function CardEditItems({ openEditModal, openDeleteModal }) {
 	return (
 		<>
-			<div className='card-edit-items flex gap-2.5 relative z-10'>
+			<div className='card-edit-items flex gap-2.5'>
 				<button type='button' onClick={openEditModal}>
 					<Image src={Pencil} alt='edit task' />
 				</button>
