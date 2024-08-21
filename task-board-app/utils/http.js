@@ -52,10 +52,29 @@ export async function fetchSingleTask({ id, signal }) {
 	return task;
 }
 
-export async function updateTask({ id, task }) {
+export async function updateTaskParent({ id, task }) {
 	const response = await fetch(url + `/${id}`, {
 		method: 'PUT',
 		body: JSON.stringify({ task_status: task }),
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+
+	if (!response.ok) {
+		const error = new Error('An error occurred while updating the task');
+		error.code = response.status;
+		error.info = await response.json();
+		throw error;
+	}
+
+	return await response.json();
+}
+
+export async function updateTask({ id, formData }) {
+	const response = await fetch(`${url}/${id}`, {
+		method: 'PUT',
+		body: JSON.stringify(formData),
 		headers: {
 			'Content-Type': 'application/json',
 		},

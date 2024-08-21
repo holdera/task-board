@@ -6,7 +6,7 @@ import { useTaskStore } from '@/store/useTaskStore';
 import {
 	fetchTasks,
 	queryClient,
-	updateTask,
+	updateTaskParent,
 	deleteTask,
 } from '../../../utils/http';
 import { DndContext } from '@dnd-kit/core';
@@ -59,7 +59,7 @@ export default function TaskBoard() {
 
 	const updateCardTask = useMutation({
 		queryKey: ['tasks'],
-		mutationFn: updateTask,
+		mutationFn: updateTaskParent,
 		onMutate: async (data) => {
 			const { id, task_status } = data;
 
@@ -116,10 +116,6 @@ export default function TaskBoard() {
 		}
 	}
 
-	function handleEdit(e) {
-		console.log('edit');
-	}
-
 	useEffect(() => {
 		setTasks(data);
 
@@ -155,7 +151,7 @@ export default function TaskBoard() {
 				{parent &&
 					parent.map((item, i) => (
 						<TaskColumn
-							key={item.title + i}
+							key={item.id}
 							id={item.id}
 							title={item.title}
 						>
