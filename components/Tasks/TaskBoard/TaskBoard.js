@@ -157,7 +157,10 @@ export default function TaskBoard() {
 
 	return (
 		<>
-			<section id='task-board' className='flex gap-5 justify-between'>
+			<section
+				id='task-board'
+				className='flex gap-5 justify-between pt-7'
+			>
 				<DndContext sensors={pointer} onDragEnd={handleDragEnd}>
 					{isLoading && <p>Is loading...</p>}
 					{isError && (
