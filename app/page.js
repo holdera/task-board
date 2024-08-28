@@ -4,7 +4,7 @@ import { queryClient } from '@/utils/http';
 import AddTaskForm from '@/components/Tasks/Form/AddTaskForm';
 import TaskBoard from '@/components/Tasks/TaskBoard/TaskBoard';
 import Sidebar from '@/components/Sidebar/Sidebar';
-import { useModalStore } from '@/store/useModalStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 
 export default function Home() {
 	const addTaskIsOpen = useModalStore((state) => state.addTaskModal);

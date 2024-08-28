@@ -1,6 +1,6 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
-import { useModalStore } from '@/store/useModalStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 import { createNewTask, queryClient } from '@/utils/http';
 import Button from '@/components/UI/Button';
 import Modal from '@/components/UI/Modal';

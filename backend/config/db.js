@@ -1,12 +1,11 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
-const db =
-	'mongodb+srv://holdera09:Go6t26ZAgiNNscfD@cluster0.vyahrlq.mongodb.net/taskboard?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.set('strictQuery', true, 'useNewUrlParser', true);
 
 const connectDb = async () => {
 	try {
-		await mongoose.connect(db);
+		await mongoose.connect(process.env.MONGODB_URI);
 		console.log('connected');
 	} catch (error) {
 		console.log(error?.message ?? 'error, failed to connect');

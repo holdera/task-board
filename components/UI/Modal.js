@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import CloseImg from '../../assets/close.svg';
-import { useModalStore } from '@/store/useModalStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 
 export default function Modal({ children }) {
 	const closeModal = useModalStore((state) => state.closeModal);

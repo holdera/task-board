@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useModalStore } from '@/store/useModalStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 import Button from '@/components/UI/Button';
 import ErrorMsg from '@/components/UI/ErrorMsg';
 import Modal from '@/components/UI/Modal';

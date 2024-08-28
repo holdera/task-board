@@ -1,8 +1,8 @@
 'use client';
 import { useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useModalStore } from '@/store/useModalStore';
-import { useTaskStore } from '@/store/useTaskStore';
+import { useModalStore } from '@/lib/store/useModalStore';
+import { useTaskStore } from '@/lib/store/useTaskStore';
 import {
 	fetchTasks,
 	queryClient,
